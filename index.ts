@@ -87,6 +87,22 @@ export function Email(x: any): boolean {
 		&& email_regex.test(x)
 }
 
+export function Anything(x: any): true {
+	return true
+}
+
+export function Exactly(x: any): (y: any) => boolean {
+	return function(y: any) {
+		return x === y
+	}
+}
+
+export function OneOf(...xs: any[]): (x: any) => boolean {
+	return function (x: any) {
+		return xs.includes(x)
+	}
+}
+
 export function validate<T>(f: (x: any) => boolean): (x: any) => T|Error {
 	return function(x) {
 		if (f(x)) return x
