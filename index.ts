@@ -81,7 +81,7 @@ export function StringDate(x: any): boolean {
 		&& !(Number.isNaN(Date.parse(x)))
 }
 
-const email_regex = new RegExp('^[a-z-\\.+]+@[a-z0-9-]+\.[a-z\.]+$')
+const email_regex = new RegExp('^[a-z-\\.+]+@[a-z0-9-]+\\.[a-z\\.]+$')
 export function Email(x: any): boolean {
 	return typeof x === 'string'
 		&& email_regex.test(x)
