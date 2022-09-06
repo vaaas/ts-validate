@@ -22,6 +22,7 @@ export function Structure(o: Record<string, (x: any) => boolean>): (x: any) => b
 	return function(x) {
 		return x
 			&& typeof x === 'object'
+			&& x !== null
 			&& Object.entries(o)
 				.every(([k, f]) => f(x[k]))
 	}
@@ -77,7 +78,7 @@ export function StringNatural(x: any): boolean {
 
 export function StringDate(x: any): boolean {
 	return typeof x === 'string'
-		&& x.length === 10
+		&& x.length >= 10
 		&& !(Number.isNaN(Date.parse(x)))
 }
 

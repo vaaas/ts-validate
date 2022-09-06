@@ -25,6 +25,7 @@ function Structure(o) {
     return function (x) {
         return x
             && typeof x === 'object'
+            && x !== null
             && Object.entries(o)
                 .every(([k, f]) => f(x[k]));
     };
@@ -80,7 +81,7 @@ function StringNatural(x) {
 exports.StringNatural = StringNatural;
 function StringDate(x) {
     return typeof x === 'string'
-        && x.length === 10
+        && x.length >= 10
         && !(Number.isNaN(Date.parse(x)));
 }
 exports.StringDate = StringDate;
