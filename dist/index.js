@@ -93,7 +93,7 @@ function StringDate(x) {
         && !(Number.isNaN(Date.parse(x)));
 }
 exports.StringDate = StringDate;
-const email_regex = new RegExp('^[a-z0-9-\\.+]+@[a-z0-9-]+\\.[a-z\\.]+$');
+const email_regex = new RegExp('^[a-zA-Z0-9-\\.+]+@[a-zA-Z0-9-]+\\.[a-zA-Z\\.]+$');
 function Email(x) {
     return typeof x === 'string'
         && email_regex.test(x);
