@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Structure = exports.Text = exports.Natural = exports.Integer = void 0;
+exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Partial = exports.Structure = exports.Text = exports.Natural = exports.Integer = void 0;
 function Integer(min = -Infinity, max = Infinity) {
     return function (x) {
         return Number.isInteger(x)
@@ -26,11 +26,19 @@ function Structure(o) {
         return x
             && typeof x === 'object'
             && x !== null
-            && Object.entries(o)
-                .every(([k, f]) => f(x[k]));
+            && Object.entries(o).every(([k, f]) => f(x[k]));
     };
 }
 exports.Structure = Structure;
+function Partial(o) {
+    return function (x) {
+        return x
+            && typeof x === 'object'
+            && x !== null
+            && Object.entries(x).every(([k, v]) => k in o && o[k](v));
+    };
+}
+exports.Partial = Partial;
 function List(f, min = 0, max = Infinity) {
     return function (x) {
         return Array.isArray(x)

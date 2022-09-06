@@ -23,8 +23,16 @@ export function Structure(o: Record<string, (x: any) => boolean>): (x: any) => b
 		return x
 			&& typeof x === 'object'
 			&& x !== null
-			&& Object.entries(o)
-				.every(([k, f]) => f(x[k]))
+			&& Object.entries(o).every(([k, f]) => f(x[k]))
+	}
+}
+
+export function Partial(o: Record<string, (x: any) => boolean>): (x: any) => boolean {
+	return function(x) {
+		return x
+			&& typeof x === 'object'
+			&& x !== null
+			&& Object.entries(x).every(([k, v]) => k in o && o[k]!(v))
 	}
 }
 
