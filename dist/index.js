@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Partial = exports.Structure = exports.Text = exports.Natural = exports.Integer = void 0;
+exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Intersection = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Partial = exports.Structure = exports.Text = exports.Natural = exports.Integer = void 0;
 function Integer(min = -Infinity, max = Infinity) {
     return function (x) {
         return Number.isInteger(x)
@@ -73,6 +73,12 @@ function Union(...fs) {
     };
 }
 exports.Union = Union;
+function Intersection(...fs) {
+    return function (x) {
+        return fs.every(f => f(x));
+    };
+}
+exports.Intersection = Intersection;
 function Bool(x) {
     return x === true || x === false;
 }

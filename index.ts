@@ -70,6 +70,12 @@ export function Union(...fs: Array<(x: any) => boolean>): (x: any) => boolean {
 	}
 }
 
+export function Intersection(...fs: Array<(x: any) => boolean>): (x: any) => boolean {
+	return function(x) {
+		return fs.every(f => f(x))
+	}
+}
+
 export function Bool(x: any): boolean {
 	return x === true || x === false
 }
