@@ -4,9 +4,9 @@ type ReturnTypes<R extends Record<any, (x: any) => any>> = {
 
 type G<T> = (x: unknown) => x is T
 
-const isInteger = (x: unknown): x is number => Number.isInteger(x)
+export const isInteger = (x: unknown): x is number => Number.isInteger(x)
 
-const isObject = (x: unknown): x is Record<string, unknown> =>
+export const isObject = (x: unknown): x is Record<string, unknown> =>
     typeof x === 'object' && x !== null;
 
 export function Integer(min: number = -Infinity, max: number =Infinity) {

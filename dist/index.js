@@ -1,18 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Intersection = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Partia = exports.Structure = exports.Text = exports.Natural = exports.Integer = void 0;
+exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Intersection = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Partial = exports.Structure = exports.Text = exports.Natural = exports.Integer = exports.isObject = exports.isInteger = void 0;
 const isInteger = (x) => Number.isInteger(x);
+exports.isInteger = isInteger;
 const isObject = (x) => typeof x === 'object' && x !== null;
+exports.isObject = isObject;
 function Integer(min = -Infinity, max = Infinity) {
     return function (x) {
-        return isInteger(x)
+        return (0, exports.isInteger)(x)
             && x >= min
             && x <= max;
     };
 }
 exports.Integer = Integer;
 function Natural(x) {
-    return isInteger(x) && x > 0;
+    return (0, exports.isInteger)(x) && x > 0;
 }
 exports.Natural = Natural;
 function Text(min = 0, max = Infinity) {
@@ -25,18 +27,18 @@ function Text(min = 0, max = Infinity) {
 exports.Text = Text;
 function Structure(o) {
     return function (x) {
-        return isObject(x)
+        return (0, exports.isObject)(x)
             && Object.entries(o).every(([k, f]) => f(x[k]));
     };
 }
 exports.Structure = Structure;
-function Partia(o) {
+function Partial(o) {
     return function (x) {
-        return isObject(x)
+        return (0, exports.isObject)(x)
             && Object.entries(x).every(([k, v]) => k in o && o[k](v));
     };
 }
-exports.Partia = Partia;
+exports.Partial = Partial;
 function List(f, min = 0, max = Infinity) {
     return function (x) {
         return Array.isArray(x)
