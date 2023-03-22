@@ -1,5 +1,5 @@
-type ReturnTypes<R extends Record<any, (x: any) => any>> = {
-    [K in keyof R]: ReturnType<R[K]>
+type ReturnTypes<R extends Record<any, G<any>>> = {
+    [K in keyof R]: R[K] extends G<infer T> ? T : never;
 }
 
 type G<T> = (x: unknown) => x is T
