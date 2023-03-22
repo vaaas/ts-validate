@@ -129,7 +129,7 @@ export function Tuple<F extends G<any>[]>(...fs: F) {
 }
 
 export function Maybe<T>(f: G<T>) {
-	return function(x: unknown): x is T | null | undefined {
+	return function(x: unknown): x is T | undefined {
 		return x === null || x === undefined || f(x)
 	}
 }
