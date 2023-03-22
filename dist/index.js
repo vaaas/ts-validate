@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Intersection = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Partial = exports.Structure = exports.Text = exports.Natural = exports.Integer = void 0;
+exports.validate = exports.OneOf = exports.Exactly = exports.Anything = exports.Email = exports.StringDate = exports.StringNatural = exports.StringDecimal = exports.Bool = exports.Intersection = exports.Union = exports.Maybe = exports.Tuple = exports.List = exports.Partia = exports.Structure = exports.Text = exports.Natural = exports.Integer = void 0;
+const isInteger = (x) => Number.isInteger(x);
+const isObject = (x) => typeof x === 'object' && x !== null;
 function Integer(min = -Infinity, max = Infinity) {
     return function (x) {
-        return Number.isInteger(x)
+        return isInteger(x)
             && x >= min
             && x <= max;
     };
 }
 exports.Integer = Integer;
 function Natural(x) {
-    return Number.isInteger(x) && x > 0;
+    return isInteger(x) && x > 0;
 }
 exports.Natural = Natural;
 function Text(min = 0, max = Infinity) {
@@ -23,22 +25,18 @@ function Text(min = 0, max = Infinity) {
 exports.Text = Text;
 function Structure(o) {
     return function (x) {
-        return x
-            && typeof x === 'object'
-            && x !== null
+        return isObject(x)
             && Object.entries(o).every(([k, f]) => f(x[k]));
     };
 }
 exports.Structure = Structure;
-function Partial(o) {
+function Partia(o) {
     return function (x) {
-        return x
-            && typeof x === 'object'
-            && x !== null
+        return isObject(x)
             && Object.entries(x).every(([k, v]) => k in o && o[k](v));
     };
 }
-exports.Partial = Partial;
+exports.Partia = Partia;
 function List(f, min = 0, max = Infinity) {
     return function (x) {
         return Array.isArray(x)

@@ -36,8 +36,8 @@ export function Structure<R extends Record<string, G<any>>>(o: R) {
 	}
 }
 
-export function Partia<R extends Record<string, G<any>>>(o: R) {
-	return function(x: unknown): x is ReturnTypes<R> {
+export function Partial<R extends Record<string, G<any>>>(o: R) {
+	return function(x: unknown): x is Partial<ReturnTypes<R>> {
         return isObject(x)
 			&& Object.entries(x).every(([k, v]) => k in o && o[k]!(v))
 	}
