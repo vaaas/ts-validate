@@ -9,6 +9,8 @@ export const isInteger = (x: unknown): x is number => Number.isInteger(x)
 export const isObject = (x: unknown): x is Record<string, unknown> =>
     typeof x === 'object' && x !== null;
 
+export const isNumber = (x: unknown): x is number => typeof x === 'number'
+
 export function Integer(min: number = -Infinity, max: number =Infinity) {
 	return function(x: unknown): x is number {
 		return isInteger(x)
@@ -19,6 +21,17 @@ export function Integer(min: number = -Infinity, max: number =Infinity) {
 
 export function Natural(x: unknown): x is number {
 	return isInteger(x) && x > 0
+}
+
+/** validates whether an argument is a real number
+ *
+ * - `min` — lower bound, inclusive
+ * - `max` — upper bound, inclusive
+ */
+export function Real(min: number, max: number) {
+    return function (x: unknown): x is number {
+        return isNumber(x) && x >= min && x <= max
+    }
 }
 
 export function Text(min: number = 0, max: number = Infinity) {
