@@ -1,8 +1,6 @@
-type ReturnTypes<R extends Record<any, G<any>>> = {
-    [K in keyof R]: R[K] extends G<infer T> ? T : never;
-}
+export type Validator<T> = (x: unknown) => x is T
 
-type G<T> = (x: unknown) => x is T
+export type Validated<T> = T extends Validator<infer U> ? U : never;
 
 export const isInteger = (x: unknown): x is number => Number.isInteger(x)
 
@@ -42,21 +40,21 @@ export function Text(min: number = 0, max: number = Infinity) {
 	}
 }
 
-export function Structure<R extends Record<string, G<any>>>(o: R) {
-	return function(x: unknown): x is ReturnTypes<R> {
+export function Structure<R extends Record<string, any>>(o: {[K in keyof R]: Validator<R[K]>}): Validator<R> {
+	return function(x: unknown): x is R {
         return isObject(x)
 			&& Object.entries(o).every(([k, f]) => f(x[k]))
 	}
 }
 
-export function Partial<R extends Record<string, G<any>>>(o: R) {
-	return function(x: unknown): x is Partial<ReturnTypes<R>> {
+export function Partial<R extends Record<string, any>>(o: {[K in keyof R]: Validator<R[K]>}): Validator<Partial<R>> {
+	return function(x: unknown): x is Partial<R> {
         return isObject(x)
 			&& Object.entries(x).every(([k, v]) => k in o && o[k]!(v))
 	}
 }
 
-export function List<T>(f: G<T>, min: number = 0, max: number = Infinity) {
+export function List<T>(f: Validator<T>, min: number = 0, max: number = Infinity) {
 	return function(x: unknown): x is Array<T> {
 		return Array.isArray(x)
 			&& x.length >= min
@@ -66,69 +64,69 @@ export function List<T>(f: G<T>, min: number = 0, max: number = Infinity) {
 }
 
 export function Tuple<A>(
-    a: G<A>,
-): G<[A]>;
+    a: Validator<A>,
+): Validator<[A]>;
 export function Tuple<A, B>(
-    a: G<A>,
-    b: G<B>,
-): G<[A, B]>;
+    a: Validator<A>,
+    b: Validator<B>,
+): Validator<[A, B]>;
 export function Tuple<A, B, C>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-): G<[A, B, C]>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+): Validator<[A, B, C]>;
 export function Tuple<A, B, C, D>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-): G<[A, B, C, D]>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+): Validator<[A, B, C, D]>;
 export function Tuple<A, B, C, D, E>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-    e: G<E>,
-): G<[A, B, C, D, E]>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+    e: Validator<E>,
+): Validator<[A, B, C, D, E]>;
 export function Tuple<A, B, C, D, E, F>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-    e: G<E>,
-    f: G<F>,
-): G<[A, B, C, D, E, F]>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+    e: Validator<E>,
+    f: Validator<F>,
+): Validator<[A, B, C, D, E, F]>;
 export function Tuple<A, B, C, D, E, F, G_>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-    e: G<E>,
-    f: G<F>,
-    g: G<G_>,
-): G<[A, B, C, D, E, F, G_]>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+    e: Validator<E>,
+    f: Validator<F>,
+    g: Validator<G_>,
+): Validator<[A, B, C, D, E, F, G_]>;
 export function Tuple<A, B, C, D, E, F, G_, H>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-    e: G<E>,
-    f: G<F>,
-    g: G<G_>,
-    h: G<H>,
-): G<[A, B, C, D, E, F, G_, H]>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+    e: Validator<E>,
+    f: Validator<F>,
+    g: Validator<G_>,
+    h: Validator<H>,
+): Validator<[A, B, C, D, E, F, G_, H]>;
 export function Tuple<A, B, C, D, E, F, G_, H, I>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-    e: G<E>,
-    f: G<F>,
-    g: G<G_>,
-    h: G<H>,
-    i: G<I>
-): G<[A, B, C, D, E, F, G_, H, I]>;
-export function Tuple<F extends G<any>[]>(...fs: F) {
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+    e: Validator<E>,
+    f: Validator<F>,
+    g: Validator<G_>,
+    h: Validator<H>,
+    i: Validator<I>
+): Validator<[A, B, C, D, E, F, G_, H, I]>;
+export function Tuple<F extends Validator<any>[]>(...fs: F) {
 	return function(x: unknown): x is any[] {
 		if (!Array.isArray(x))
 			return false
@@ -141,69 +139,69 @@ export function Tuple<F extends G<any>[]>(...fs: F) {
 	}
 }
 
-export function Maybe<T>(f: G<T>) {
+export function Maybe<T>(f: Validator<T>) {
 	return function(x: unknown): x is T | undefined {
 		return x === null || x === undefined || f(x)
 	}
 }
 
 export function Union<A>(
-    a: G<A>,
-): G<A>;
+    a: Validator<A>,
+): Validator<A>;
 export function Union<A, B>(
-    a: G<A>,
-    b: G<B>,
-): G<A | B>;
+    a: Validator<A>,
+    b: Validator<B>,
+): Validator<A | B>;
 export function Union<A, B, C>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-): G<A | B | C>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+): Validator<A | B | C>;
 export function Union<A, B, C, D>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-): G<A | B | C | D>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+): Validator<A | B | C | D>;
 export function Union<A, B, C, D, E>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-    e: G<E>,
-): G<A | B | C | D | E>;
-export function Union(...fs: Array<G<any>>) {
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+    e: Validator<E>,
+): Validator<A | B | C | D | E>;
+export function Union(...fs: Array<Validator<any>>) {
 	return function(x: unknown): x is any {
 		return fs.some(f => f(x))
 	}
 }
 
 export function Intersection<A>(
-    a: G<A>,
-): G<A>;
+    a: Validator<A>,
+): Validator<A>;
 export function Intersection<A, B>(
-    a: G<A>,
-    b: G<B>,
-): G<A & B>;
+    a: Validator<A>,
+    b: Validator<B>,
+): Validator<A & B>;
 export function Intersection<A, B, C>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-): G<A & B & C>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+): Validator<A & B & C>;
 export function Intersection<A, B, C, D>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-): G<A & B & C & D>;
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+): Validator<A & B & C & D>;
 export function Intersection<A, B, C, D, E>(
-    a: G<A>,
-    b: G<B>,
-    c: G<C>,
-    d: G<D>,
-    e: G<E>,
-): G<A & B & C & D & E>;
-export function Intersection(...fs: Array<G<any>>) {
+    a: Validator<A>,
+    b: Validator<B>,
+    c: Validator<C>,
+    d: Validator<D>,
+    e: Validator<E>,
+): Validator<A & B & C & D & E>;
+export function Intersection(...fs: Array<Validator<any>>) {
 	return function(x: unknown): x is any {
 		return fs.every(f => f(x))
 	}
@@ -251,7 +249,7 @@ export function OneOf<T extends any[]>(...xs: T) {
 	}
 }
 
-export function validate<T>(f: G<T>) {
+export function validate<T>(f: Validator<T>) {
 	return function(x: unknown): T | Error {
 		if (f(x)) return x
 		else return new Error('validation error')
