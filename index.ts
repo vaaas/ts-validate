@@ -252,6 +252,19 @@ export function OneOf<T extends any[]>(...xs: T) {
 export function validate<T>(f: Validator<T>) {
 	return function(x: unknown): T | Error {
 		if (f(x)) return x
-		else return new Error('validation error')
+		else return new ValidationError()
+	}
+}
+
+export function validateOrThrow<T>(f: Validator<T>) {
+	return function(x: unknown): T | never {
+		if (f(x)) return x
+		else throw new ValidationError()
+	}
+}
+
+export class ValidationError extends Error {
+	constructor(message = 'validation error') {
+		super(message)
 	}
 }
